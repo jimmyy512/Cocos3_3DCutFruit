@@ -1,6 +1,7 @@
 import { Prefab } from 'cc';
 import { TextAsset } from 'cc';
 import { _decorator, assetManager, Component, Node, AssetManager, Asset } from 'cc';
+import { ExcelMgr } from './ExcelMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -49,11 +50,18 @@ export class GameManager extends Component {
     }
 
     private startGame(): void {
-        console.log(this.excelBundle.get('fragment'));
-        console.log(this.fruitPrefabBundle.get('apple'));
+        (window as any).test = this;
+
+        console.warn("ExcelMgr.Instance:",ExcelMgr.Instance);
+        ExcelMgr.Instance.addTable("fruit",(this.excelBundle.get("fruit") as TextAsset).text)
+        ExcelMgr.Instance.addTable("fragment",(this.excelBundle.get("fragment") as TextAsset).text)
+
+        let res=ExcelMgr.Instance.queryByID("fruit","1001");
+        console.warn("res:",res);
     }
 
     start() {
+        this.node.addComponent(ExcelMgr)
         this.preloadBundle();
     }
 
