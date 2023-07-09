@@ -31,7 +31,8 @@ export class GameManager extends Component {
     private passTime: number = 0;
     private nextTime: number = 0;
     private readonly SPAWN_LINE: number = -10;
-
+    // iphone XS 812*375解析度情況下,X軸最大值為9,X軸最小值為-9
+    private readonly TOTAL_LEN: number = 18;
     start() {
         this.node.addComponent(ExcelMgr);
         this.preloadBundle();
@@ -115,7 +116,6 @@ export class GameManager extends Component {
         this.gameState = GameState.Running;
         this.fragIndex = 0;
         this.rootNode.removeAllChildren();
-        this.generateOneFruit();
     }
 
     private getFragmentByDifficult(difficulty: number): FragmentData[] {
@@ -139,8 +139,6 @@ export class GameManager extends Component {
             newFruitData = ExcelMgr.Instance.queryByID('fruit', fruitID);
         }
 
-        console.warn('newFruitData:', newFruitData);
-
         // 實例化水果預製體並將其添加到根節點
         const fruitPrefab: Prefab = this.fruitPrefabBundle.get(newFruitData.prefab);
         const fruitNode = instantiate(fruitPrefab);
@@ -148,8 +146,7 @@ export class GameManager extends Component {
 
         // 根據碎片配置設置水果的位置
         const percent = parseFloat(fragmentConfig.positionX) / 1280;
-        const totalLen = 18;
-        const fruitX = -totalLen * 0.5 + totalLen * percent;
+        const fruitX = -this.TOTAL_LEN * 0.5 + this.TOTAL_LEN * percent;
         fruitNode.setPosition(v3(fruitX, this.SPAWN_LINE, -10));
 
         // 將Fruit組件添加到水果節點並使用新的水果數據進行初始化
